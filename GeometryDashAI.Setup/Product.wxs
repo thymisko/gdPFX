@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+  <!-- Define product details -->
+  <Product Id="*" 
+           Name="Geometry Dash AI" 
+           Language="1033" 
+           Version="1.0.0.0" 
+           Manufacturer="gdPFX" 
+           UpgradeCode="PUT-GUID-HERE">
+    
+    <Package InstallerVersion="200" 
+             Compressed="yes" 
+             InstallScope="perMachine" />
+
+    <MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+    <MediaTemplate EmbedCab="yes" />
+
+    <!-- Define UI -->
+    <UIRef Id="WixUI_InstallDir" />
+    <Property Id="WIXUI_INSTALLDIR" Value="INSTALLFOLDER" />
+    
+    <!-- License file (optional) -->
+    <WixVariable Id="WixUILicenseRtf" Value="License.rtf" />
+    
+    <!-- Define installation directory structure -->
+    <Directory Id="TARGETDIR" Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="MANUFACTURERFOLDER" Name="gdPFX">
+          <Directory Id="INSTALLFOLDER" Name="GeometryDashAI">
+            <!-- Define components to install -->
+            <Component Id="ApplicationFiles" Guid="*">
+              <File Id="ApplicationEXE" 
+                    Source="$(var.GeometryDashAI.TargetPath)" 
+                    KeyPath="yes" />
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+      
+      <!-- Start Menu shortcuts -->
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder" Name="Geometry Dash AI">
+          <Component Id="ApplicationShortcut" Guid="*">
+            <Shortcut Id="ApplicationStartMenuShortcut" 
+                      Name="Geometry Dash AI" 
+                      Description="AI for Geometry Dash"
+                      Target="[INSTALLFOLDER]GeometryDashAI.exe"
+                      WorkingDirectory="INSTALLFOLDER"/>
+            <RemoveFolder Id="CleanUpShortCut" Directory="ApplicationProgramsFolder" On="uninstall"/>
+            <RegistryValue Root="HKCU" Key="Software\gdPFX\GeometryDashAI" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
+          </Component>
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <!-- Define features -->
+    <Feature Id="ProductFeature" Title="Geometry Dash AI" Level="1">
+      <ComponentRef Id="ApplicationFiles" />
+      <ComponentRef Id="ApplicationShortcut" />
+    </Feature>
+  </Product>
+</Wix>
